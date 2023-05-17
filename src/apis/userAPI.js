@@ -12,7 +12,7 @@ export const apiSignin = async (values) => {
 
 ///hack cot key ma nhom
 export const apiSignup = async (values) => {
-  const payload = { ...values, maNhom: "GP01" };
+  const payload = { ...values, maNhom: "GP02" };
 
   const { data } = await axiosClient.post("/QuanLyNguoiDung/DangKy", payload);
   return data;

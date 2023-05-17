@@ -2,19 +2,50 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useSelector, useDispatch } from 'react-redux';
 import {signin} from '../../../slices/userSlice'
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup"
+import {MdAccountCircle} from 'react-icons/md'
+import { Checkbox } from '@mantine/core';
+import styles from './SignIn.module.scss'
+import swal from 'sweetalert2';
+
+
+// Định nghĩa các xác thực cho từng input
+const schema = yup.object({
+  taiKhoan: yup.string().required("Tài khoản không được để trống"),
+  matKhau: yup
+    .string()
+    .required("Mật khẩu không được để trống")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+      "Mật khẩu ít nhất 8 kí tự, phải có 1 chữ hoa, 1 chữ thường và 1 số"
+    ),
+});
+
 
 function Signin() {
-  const { register, handleSubmit, formState: { errors }, } = useForm ({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    // Khai báo các giá trị khởi tạo cho các input
     defaultValues: {
-     // Khai báo các giá trị khởi tạo cho các input
-     taiKhoan: "",
-     matKhau: "",
+      taiKhoan: "",
+      matKhau: "",
     },
-  })
+    mode: "onTouched",
+    // Khai báo schema validation bằng yup
+    resolver: yupResolver(schema),
+  });
 
   const { user, isLoading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+
+ 
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const onSubmit = (values) => {
     dispatch(signin(values));
@@ -23,53 +54,79 @@ function Signin() {
   const onError = (errors) => {
     console.log(errors);
   };
-  //kiem tra neu co thong tin user => da dang nhap => dieu huong ve trang Home
+
+  // Kiểm tra nếu có thông tin user => đã đăng nhập => điều hướng về trang Home
   if (user) {
-    return <Navigate to="/" />
+    // swal("Đăng nhập thành công", "" , "success" );
+    const url = searchParams.get("redirectUrl") || "/";
+    return <Navigate to={url} />;
   }
 
   return (
-    <div>
-    <h1>Đăng Nhập</h1>
-    
-    <form onSubmit={handleSubmit(onSubmit, onError)}>
-        <div>
+    <div className={styles.signIn}>
+    <div className={styles.signInContent}>
+      <div className={styles.iconSignIn}>
+        <MdAccountCircle />
+      </div>
+
+      <h1>Đăng nhập</h1>
+
+      <form className={styles.formSignIn} onSubmit={handleSubmit(onSubmit)}>
+        <div className={styles.inputSignIn}>
+          <label>Tài khoản</label>
           <input
             type="text"
-            placeholder="Tài Khoản"
+            placeholder="Tài khoản"
             {...register("taiKhoan", {
               required: {
                 value: true,
-                message: "Tài khoản không được để trống",
+                message: "Tài khoản không được để trống!",
               },
             })}
           />
-          {errors.taiKhoan && <p>{errors.taiKhoan.message}</p>}
+          {errors.taiKhoan && (
+            <p className={styles.txtError}>{errors.taiKhoan.message}</p>
+          )}
         </div>
 
-        <div>
+        <div className={styles.inputSignIn}>
+          <label>Mặt khẩu</label>
           <input
-            type="password"
+            type="text"
             placeholder="Mật khẩu"
             {...register("matKhau", {
               required: {
                 value: true,
                 message: "Mật khẩu không được để trống",
               },
-              pattern: {
-                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-                message: "Mật khẩu ít nhất 8 kí tự, phải có 1 chữ hoa, 1 chữ thường và 1 số"
-              },
             })}
           />
-          {errors.matKhau && <p>{errors.matKhau.message}</p>}
+          {errors.matKhau && (
+            <p className={styles.txtError}>{errors.matKhau.message}</p>
+          )}
         </div>
-            {/* hien thi loi server tra ve VD : truong hop sai tai khoan hoac mat khau  */}
-          {error && <p>{error}</p>}
-        <button disabled={isLoading}>Dang Nhap</button>
+
+        <div className="text-start my-3">
+          <Checkbox label="Nhớ tài khoản" color="orange" />
+        </div>
+
+        {error && <p className={styles.txtError}>{error}</p>}
+        <div className={styles.btnSignIn}>
+          <button>Đăng nhặp</button>
+        </div>
       </form>
+      <div className={styles.linkSignUp}>
+        <p>
+          Chưa có tài khoản
+          <span>
+            <Link to="/SignUp">Đăng kí ngay </Link>
+          </span>
+          !
+        </p>
+      </div>
+    </div>
   </div>
-  )
+);
 }
 
 export default Signin

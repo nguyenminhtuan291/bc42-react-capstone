@@ -5,7 +5,7 @@ export const apiGetMovies = async () => {
     "/QuanLyPhim/LayDanhSachPhim",
     {
       params: {
-        maNhom: "GP00",
+        maNhom: "GP01",
       },
     }
   );
@@ -25,4 +25,14 @@ export const apiGetMovieDetails = async (movieId) => {
   });
 
   return data;
+};
+
+export const apiCreateMovie = async (movie) => {
+  const formData = new FormData();
+  for (let key in movie) {
+    formData.append(key, movie[key]);
+  }
+  formData.append("maNhom", "GP01");
+
+  await axiosClient.post("/QuanLyPhim/ThemPhimUploadHinh", formData);
 };
