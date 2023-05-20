@@ -1,22 +1,25 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { apiSignin } from "../apis/userAPI";
+import axios from "axios";
 
-// async actions
-export const signin = createAsyncThunk("user/signin", async (values) => {
-  try {
-    const data = await apiSignin(values);
-    //lưu thông tin user vào localStorage de603 giữ trạng thái đăng nhập
-    localStorage.setItem("user", JSON.stringify(data.content));
+// Async actions
+// VD: dispatch(getUser("danndz"))
+const getUser = createAsyncThunk(
+  "user/get_user", // action type
+  async (username, { dispatch, getState }) => {
+    try {
+      const response = await axios.get(
+        `https://api.github.com/users/${username}`
+      );
 
-    return data.content;
-  } catch (error) {
-    throw error.response?.data?.content;
+      return response.data;
+    } catch (error) {
+      throw error.response.data.message;
+    }
   }
-});
+);
 
 const initialState = {
-  //đồng bộ thông tin từ localStorage vào state của redux
-  user: JSON.parse(localStorage.getItem("user")) || null,
+  user: null,
   isLoading: false,
   error: null,
 };
@@ -24,24 +27,5 @@ const initialState = {
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {
-    signout: (state, action) => {
-      return { ...state, user: null };
-    },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(signin.pending, (state) => {
-      return { ...state, isLoading: true, error: null };
-    });
-    builder.addCase(signin.fulfilled, (state, action) => {
-      return { ...state, isLoading: false, user: action.payload };
-    });
-    builder.addCase(signin.rejected, (state, action) => {
-      return { ...state, isLoading: false, error: action.error.message };
-    });
-  },
+  reducers: {},
 });
-
-export const { signout } = userSlice.actions;
-
-export default userSlice.reducer;

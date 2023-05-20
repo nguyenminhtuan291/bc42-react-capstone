@@ -1,69 +1,68 @@
-import { lazy, Suspense } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import MainLayout from "./layouts/MainLayouts/MainLayout";
-import AuthLayout from "./layouts/AuthLayout/AuthLayout";
-import ProtectedRoutes from "./routes/ProtectedRoutes";
-// import MovieManagement from "./modules/MovieManagement/MovieManagement";
-import AdminLayout from "./layouts/AdminLayout/AdminLayout";
-import AdminRoute from "./routes/AdminRoute";
 
-// import Home from "./modules/Home/Home";
-// import MovieDeatails from "./modules/MovieDetails/MovieDeatails";
-// import Signin from "./modules/Auth/Signin/Signin";
-// import Signup from "./modules/Auth/Signup/Signup";
-// import Booking from "./modules/Booking/Booking";
+// Component bản chất là một function return về một JSX mô tả giao diện sẽ được hiển thị
 
-const Home = lazy(() => import("./modules/Home/Home"));
-const MovieDeatails = lazy(() =>
-  import("./modules/MovieDetails/MovieDeatails")
-);
-const Booking = lazy(() => import("./modules/Booking/Booking"));
-const Signin = lazy(() => import("./modules/Auth/Signin/Signin"));
-const Signup = lazy(() => import("./modules/Auth/Signup/Signup"));
-const MovieManagement = lazy(() =>
-  import("./modules/MovieManagement/MovieManagement")
-);
+import CustomHooks from "./13_CustomHooks/CustomHooks";
+import ReduxThunk from "./15_ReduxThunk/ReduxThunk";
+import Databinding from "./2_Databinding/Databinding";
+import ConditionalRendering from "./3_ConditionalRendering/ConditionalRendering";
+import Event from "./5_Event/Event";
+import Style from "./6_Style/Style";
+import State from "./7_State/State";
+import Props from "./8_Props/Props";
+import Effect from "./9_Effect/Effect";
+import SelectCar from "./BT_SelectCar/SelectCar";
+import ShoeShop from "./BT_ShoeShop/ShoeShop";
+import ShoppingCart from "./BT_ShoppingCart/ShoppingCart";
+// import UserManagement from "./BT_UserManagement/UserManagement";
+// import List from "./_List/List";
+
+import { BrowserRouter, Router, Routes, Link, Route } from "react-router-dom";
+import MainLayout from "./layouts/MainLayout";
+import ArticleList from "./18_Routing/ArticleList";
+import ArticleDetails from "./18_Routing/ArticleDetails";
+import ReactBootstrap from "./19_ReactBootstrap/ReactBootstrap";
+
+// import Welcome from "./1_Component/Welcome";
+// import Home from "./BT_HomeLayout/Home";
+
+// function App() {
+//   return (
+//     <div>
+//       <Home />
+//     </div>
+//   );
+// }
+
+// export default App;
+
+// import MSILayout from "./BT_MSILayout/MSILayout";
 
 function App() {
   return (
-    <Suspense fallback={<h1>Loading</h1>}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<Home />} />
-            <Route path="/movies/:movieId" element={<MovieDeatails />} />
-            <Route
-              path="/booking/:bookingId"
-              element={
-                <ProtectedRoutes>
-                  <Booking />
-                </ProtectedRoutes>
-              }
-            />
-          </Route>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainLayout/>}>
 
-          <Route path="/" element={<AuthLayout />}>
-            <Route path="/signin" element={<Signin />} />
-            <Route path="/signup" element={<Signup />} />
-          </Route>
+        <Route path="/" element={<Home />} />
+        <Route path="/shoe-shop" element={<ShoeShop />} />
+        <Route path="/shopping-cart" element={<ShoppingCart />} />
 
-          <Route
-            path="/admin"
-            element={
-              <AdminRoute>
-                <AdminLayout />
-              </AdminRoute>
-            }
-          >
-            <Route path="movies" element={<MovieManagement />} />
-            {/* <Route path="users" element={<UserManagement />} />
-            <Route path="tickets" element={<TicketsManagement />} /> */}
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </Suspense>
+        <Route path="/articles" element={<ArticleList />} />
+        <Route path="/articles/:id" element={<ArticleDetails />} />
+        </Route>
+        {/* de duoi cung tat ca cai route khac, nếu hok nhập cái path mình k đinh nghĩa   */}
+        <Route path="react-bootstrap" element={<ReactBootstrap />} />
+        <Route path="*" element={<h1>Not Found</h1>} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
 export default App;
+
+
+//đã có viết sẵn html ban đầu thì qu extendsion html to JSX nó sẽ chuyển đổi cái giao hiện qua html thuần qua JSX , copy rồi bấm chuột phải bấm convert to html nếu có cài extendsion
+//có thể dùng trang web transform.tools/html-to-JSX
+
+//tính chât tái sử dụng 
