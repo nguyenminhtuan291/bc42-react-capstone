@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
-function Showtimes() {
-  return (
-    <div>Showtimes</div>
-  )
+function ShowTimes() {
+  return <div>ShowTimes</div>;
 }
 
-export default Showtimes
+export default ShowTimes;
